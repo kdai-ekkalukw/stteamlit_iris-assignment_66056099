@@ -1,90 +1,45 @@
-#66056099
-
 import streamlit as st
-import seaborn as sns
-import matplotlib.pyplot as plt
 import pandas as pd
-import pickle
-from sklearn.metrics import accuracy_score
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+import seaborn as sns
 
-#deploy to streamlit cloud for 66056099 as URL below
+st.title("Iris")
+st.markdown('สร้าง `scatter plot` แสดงผลข้อมูล **Iris**')
 
-st.title('Iris Classifier')
-st.write("This app uses 6 inputs to predict the iris class using "
-         "a model built on the Iris dataset. Use the form below"
-         " to get started!")
+choices = ['sepal_length',
+           'sepal_width',
+           'petal_length',
+           'petal_width']
 
-penguin_file = st.file_uploader('Upload your own penguin data')
+# https://docs.streamlit.io/library/api-reference/widgets/st.selectbox
+# 1. สร้าง st.selectbox ของ ตัวเลือก แกน x และ y จาก choices
+#selected_x_var = 'อะไรดี'
+#selected_y_var = 'อะไรดี'
+selected_x_var = st.selectbox('select x variable',choices)
+selected_y_var = st.selectbox('select y variable', choices)
 
-if penguin_file is None:
-    rf_pickle = open('random_forest_penguin.pickle', 'rb')
-    map_pickle = open('output_penguin.pickle', 'rb')
+# https://docs.streamlit.io/library/api-reference/widgets/st.file_uploader
+# 2. สร้าง st.file_uploader เพื่อให้เลือกไฟล์ .csv เท่านั้น จากเครื่องผู้ใช้งาน
+#penguin_file = None
+iris_file = st.file_uploader('select file iris.csv then upload', type=['csv'])
 
-    rfc = pickle.load(rf_pickle)
-    unique_penguin_mapping = pickle.load(map_pickle)
-
-    rf_pickle.close()
+if iris_file is not None:
+    iris_df = pd.read_csv(iris_file)
 else:
-    penguin_df = pd.read_csv(penguin_file)
-    penguin_df = penguin_df.dropna()
+    st.stop()
 
-    output = penguin_df['species']
-    features = penguin_df[['island', 'bill_length_mm', 'bill_depth_mm',
-                           'flipper_length_mm', 'body_mass_g', 'sex']]
+st.subheader('ข้อมูลตัวอย่าง')
+# st.write(penguins_df)
 
-    features = pd.get_dummies(features)
+st.subheader('แสดงผลข้อมูล')
+sns.set_style('darkgrid')
+markers = {"Virginica": "v", "Versicolor": "s", "Setosa": 'o'}
 
-    output, unique_penguin_mapping = pd.factorize(output)
-
-    x_train, x_test, y_train, y_test = train_test_split(
-        features, output, test_size=.8)
-
-    rfc = RandomForestClassifier(random_state=15)
-    rfc.fit(x_train, y_train)
-
-    y_pred = rfc.predict(x_test)
-
-    score = round(accuracy_score(y_pred, y_test), 2)
-
-    st.write('We trained a Random Forest model on these data,'
-             ' it has a score of {}! Use the '
-             'inputs below to try out the model.'.format(score))
-
-with st.form('user_inputs'):
-    island = st.selectbox('Penguin Island', options=[
-        'Biscoe', 'Dream', 'Torgerson'])
-    sex = st.selectbox('Sex', options=[
-        'Female', 'Male'])
-    bill_length = st.number_input(
-        'Bill Length (mm)', min_value=0, value=50)
-    bill_depth = st.number_input(
-        'Bill Depth (mm)', min_value=0, value=18)
-    flipper_length = st.number_input(
-        'Flipper Length (mm)', min_value=0, value=220)
-    body_mass = st.number_input(
-        'Body Mass (g)', min_value=0, value=3650)
-    st.form_submit_button()
-
-island_biscoe, island_dream, island_torgerson = 0, 0, 0
-if island == 'Biscoe':
-    island_biscoe = 1
-elif island == 'Dream':
-    island_dream = 1
-elif island == 'Torgerson':
-    island_torgerson = 1
-
-sex_female, sex_male = 0, 0
-
-if sex == 'Female':
-    sex_female = 1
-
-elif sex == 'Male':
-    sex_male = 1
-
-new_prediction = rfc.predict([[bill_length, bill_depth, flipper_length,
-                               body_mass, island_biscoe, island_dream,
-                               island_torgerson, sex_female, sex_male]])
-prediction_species = unique_penguin_mapping[new_prediction][0]
-st.write('We predict your penguin is of the {} species'.format(prediction_species))
+fig, ax = plt.subplots()
+ax = sns.scatterplot(data=iris_df,
+                     x=selected_x_var, y=selected_y_var,
+                     hue='species', markers=markers, style='species')
+plt.xlabel(selected_x_var)
+plt.ylabel(selected_y_var)
+plt.title("Iris Data")
+st.pyplot(fig)
