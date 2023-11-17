@@ -53,12 +53,7 @@ else:
              'inputs below to try out the model.'.format(score))
 
 with st.form('user_inputs'):
-    '''
-    island = st.selectbox('', options=[
-        'Biscoe', 'Dream', 'Torgerson'])
-    sex = st.selectbox('Sex', options=[
-        'Female', 'Male'])
-    '''
+
     sepal_length = st.number_input(
         'Sepal Length', min_value=0, value=50)
     sepal_width = st.number_input(
@@ -68,25 +63,6 @@ with st.form('user_inputs'):
     petal_width = st.number_input(
         'Petal Width', min_value=0, value=3650)
     st.form_submit_button()
-
-'''
-island_biscoe, island_dream, island_torgerson = 0, 0, 0
-if island == 'Biscoe':
-    island_biscoe = 1
-elif island == 'Dream':
-    island_dream = 1
-elif island == 'Torgerson':
-    island_torgerson = 1
-
-sex_female, sex_male = 0, 0
-
-if sex == 'Female':
-    sex_female = 1
-
-elif sex == 'Male':
-    sex_male = 1
-
-'''
 
 new_prediction = rfc.predict([[sepal_length, sepal_width, petal_length,
                                petal_width]])
