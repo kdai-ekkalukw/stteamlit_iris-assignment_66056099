@@ -11,7 +11,7 @@ import pickle
 
 iris_df = pd.read_csv('../iris.csv')
 iris_df.dropna(inplace=True)
-output = iris_df['species']
+output = iris_df['variety']
 features = iris_df[['sepal.length', 'sepal.width', 'petal.length', 'petal.width']]
 features = pd.get_dummies(features)
 output, uniques = pd.factorize(output)

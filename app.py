@@ -21,7 +21,7 @@ selected_y_var = st.selectbox('select y variable', choices)
 # https://docs.streamlit.io/library/api-reference/widgets/st.file_uploader
 # 2. สร้าง st.file_uploader เพื่อให้เลือกไฟล์ .csv เท่านั้น จากเครื่องผู้ใช้งาน
 #penguin_file = None
-iris_file = st.file_uploader('select file iris.csv then upload', type=['csv'])
+iris_file = st.file_uploader('select file iris_2.csv then upload', type=['csv'])
 
 if iris_file is not None:
     iris_df = pd.read_csv(iris_file)

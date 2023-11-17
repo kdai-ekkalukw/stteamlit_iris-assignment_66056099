@@ -30,7 +30,7 @@ else:
     iris_df = pd.read_csv(iris_file)
     penguin_df = iris_df.dropna()
 
-    output = iris_df['species']
+    output = iris_df['variety']
     features = iris_df[['sepal_length', 'sepal_width', 'petal_length',
                            'petal_width']]
 
